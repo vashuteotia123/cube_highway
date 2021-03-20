@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{%block title%}Order Manager{%endblock%}
+  
+{% block navbar %}
+
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Home</a>
+      </li>
+      <li class="nav-item">
+			<a class="nav-link " href="{% url 'resmanage' %}">Reservation Manager</a>
+		  </li>
+		  <li class="nav-item active">
+			<a class="nav-link" href="#">Order Manager</a>
+		  </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      <li class="nav-item">
+      	<a class="nav-link active"><b>Hello, {{ user.username }}</b></a>
+      </li>
+	</ul>
+{% endblock %}
+
+{% block body %}
+
+ 	<div class="container align-items-stretch" style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: baseline;">
+    {% for order in orders %}
+    	<div class="card border-primary m-3" style="width: 12rem">
+            <div class="card-body">
+                <h4 class="card-title">Order ID: {{order.id}}</h4>
+                <h6 class="card-text">Status: {{order.get_status_display}}</h6>
+                <h6 class="card-text">Table no: {{order.reservation.table.id}}</h6>
+                <h6 class="card-text">User: {{order.reservation.reservation.customer.username}}</h6>
+				<h6 class="card-text">Item: {{order.item.name}}</h6>
+            </div>
+            <div class="card-footer">
+               {% if order.status == 2 %}
+                <form id="form{{order.id}}" method="post" action="{% url 'ordermanage' %}">
+					{% csrf_token %}
+					<input type="hidden" name="orderID" value="{{order.id}}" />
+					<input type="hidden" name="action" value="2" />
+					<a href="#" onclick="document.getElementById('form{{order.id}}').submit();return false;" class="card-link ml-3">Start Preparing</a>
+				</form>
+                {% endif %}
+				{% if order.status == 3 %}
+                <form id="form{{order.id}}" method="post" action="{% url 'ordermanage' %}">
+					{% csrf_token %}
+					<input type="hidden" name="orderID" value="{{order.id}}" />
+					<input type="hidden" name="action" value="3" />
+					<a href="#" onclick="document.getElementById('form{{order.id}}').submit();return false;" class="card-link ml-3">Deliver Order</a>
+				</form>
+                {% endif %} 
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    <hr>
+{% endblock %}

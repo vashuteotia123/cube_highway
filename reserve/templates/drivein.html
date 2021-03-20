@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{%block title%}Order{%endblock%}
+  
+{% block navbar %}
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'reserve' %}">Reserve</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'reservation' %}">My Reservations</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      <li class="nav-item">
+      	<a class="nav-link active"><b>Hello, {{ user.username }}</b></a>
+      </li>
+	</ul>
+{% endblock %}
+
+{% block body %}
+{% load static %}
+ <div class="container" style=" max-width: 960px;">
+	
+	<div class="py-5 text-center">
+    <h2>Order</h2>
+    <p class="lead">Under Construction</p>
+  </div>
+  <div class="row">
+    <div class="col-md-4 order-md-2 mb-4">
+     <div class="row-my-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your cart</span>
+        <span class="badge badge-secondary badge-pill">{{cart_count}}</span>
+      </h4>
+      <ul class="list-group mb-3">
+       {% for order in added_orders %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{order.item.name}}</h6>
+            <small class="text-muted">{{order.item.get_category_display}}</small>
+          </div>
+          <span class="text-muted">{{order.item.cost}}</span>
+        </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total</span>
+          <strong>Rs {{added_total}}</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+			<strong class="ml-5"><a href="">Place Order Now!</a></strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+			<strong class="ml-5"><a href="">Clear Your Cart!</a></strong>
+        </li>
+      </ul>
+	  </div>
+	  
+	  <div class="row-my-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Orders Placed</span>
+        <span class="badge badge-secondary badge-pill">{{process_count}}</span>
+      </h4>
+      <ul class="list-group mb-3">
+       {% for order in process_orders %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{order.item.name}}</h6>
+            <small class="text-muted">{{order.get_status_display}}</small>
+          </div>
+          <span class="text-muted">{{order.item.cost}}</span>
+        </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total</span>
+          <strong>Rs {{reservation.total}}</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+			<strong class="ml-5"><a href="">Pay Final Bill Now!</a></strong>
+        </li>
+      </ul>
+	  </div>
+	  </div>
+	  <div class="col-md-8 order-md-1">
+	  <h4 class="my-4 "><u>Starters</u></h4>
+	  {% for starter in starters %}
+	  	<h5 class="mb-3 ml-3">{{starter.name}}
+	  	{% if starter.veg %}
+	  		<img class='small' src="{% static 'veg.png' %}" alt="veg">
+	  	{% else %}
+	  		<img class='small' src="{% static 'non.png' %}" alt="non veg">
+	  	{% endif %}
+	  	</h5>
+	  	<h6 class="mb-3 ml-3" style="text-align: right;">Rs {{starter.cost}}&nbsp;<a href=""><img class='small' src="{% static 'plus.png' %}" alt="add"></a></h6>
+	  	<h6 class="mb-3 ml-5">{{starter.description}}</h6>
+	  {% endfor %}
+	  <h4 class="my-4 "><u>Main Course</u></h4>
+	  {% for mc in main_courses %}
+	  	<h5 class="mb-3 ml-3">{{mc.name}}
+	  	{% if mc.veg %}
+	  		<img class='small' src="{% static 'veg.png' %}" alt="veg">
+	  	{% else %}
+	  		<img class='small' src="{% static 'non.png' %}" alt="non veg">
+	  	{% endif %}
+	  	</h5>
+	  	<h6 class="mb-3 ml-3" style="text-align: right;">Rs {{mc.cost}}&nbsp;<a href=""><img class='small' src="{% static 'plus.png' %}" alt="add"></a></h6>
+	  	<h6 class="mb-3 ml-5">{{mc.description}}</h6>
+	  {% endfor %}
+	  <h4 class="my-4 "><u>Desserts</u></h4>
+	  {% for dessert in desserts %}
+	  	<h5 class="mb-3 ml-3">{{dessert.name}}
+	  	{% if dessert.veg %}
+	  		<img class='small' src="{% static 'veg.png' %}" alt="veg">
+	  	{% else %}
+	  		<img class='small' src="{% static 'non.png' %}" alt="non veg">
+	  	{% endif %}
+	  	</h5>
+	  	<h6 class="mb-3 ml-3" style="text-align: right;">Rs {{dessert.cost}}&nbsp;<a href=""><img class='small' src="{% static 'plus.png' %}" alt="add"></a></h6>
+	  	<h6 class="mb-3 ml-5">{{dessert.description}}</h6>
+	  {% endfor %}
+	 </div>
+	 </div>
+	 
+</div>
+
+{% endblock %}

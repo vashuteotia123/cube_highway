@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{%block title%}Reservation Manager{%endblock%}
+  
+{% block navbar %}
+
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Home</a>
+      </li>
+      <li class="nav-item active">
+			<a class="nav-link " href="#">Reservation Manager</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" href="{% url 'ordermanage' %}">Order Manager</a>
+		  </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      <li class="nav-item">
+      	<a class="nav-link active"><b>Hello, {{ user.username }}</b></a>
+      </li>
+	</ul>
+{% endblock %}
+
+{% block body %}
+
+ 	<div class="container align-items-stretch" style="display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: baseline;">
+    {% for res in pending %}
+        <div class="card border-primary m-3" style="width: 12rem">
+            <div class="card-body">
+                <h4 class="card-title">Reservation ID: {{res.id}}</h4>
+                <h6 class="card-text">Status: {{res.get_status_display}}</h6>
+                <h6 class="card-text">PAX: {{res.PAX}}</h6>
+                <h6 class="card-text">Predict: {{res.prob}}%</h6>
+                <h6 class="card-text">Slot: {{res.slot}}</h6>
+            </div>
+			<div class="card-footer">
+                <a href="{% url 'accept' res.id %}" class="card-text ml-2" >Accept Reservation</a> <br>
+                <a href="{% url 'decline' res.id %}" class="card-text ml-2" >Decline Reservation</a> 
+        	</div>
+		</div>
+    {% endfor %}
+    {% for res in reservations %}
+    	<div class="card border-primary m-3" style="width: 12rem">
+            <div class="card-body">
+                <h4 class="card-title">Reservation ID: {{res.reservation.id}}</h4>
+                <h6 class="card-text">Status: {{res.get_status_display}}</h6>
+                <h6 class="card-text">Table no: {{res.table}}</h6>
+                <h6 class="card-text">Slot: {{res.reservation.slot}}</h6>
+            </div>
+            <div class="card-footer">
+               {% if res.status == 2 %}
+                <form id="form{{res.reservation.id}}" method="post" action="{% url 'resmanage' %}">
+					{% csrf_token %}
+					<input type="hidden" name="resID" value="{{res.reservation.id}}" />
+					<input type="hidden" name="action" value="2" />
+					<a href="#" onclick="document.getElementById('form{{res.reservation.id}}').submit();return false;" class="card-link ml-3">Confirm Arrival</a>
+				</form>
+                {% endif %}
+				{% if res.status == 5 %}
+                <form id="form{{res.reservation.id}}" method="post" action="{% url 'resmanage' %}">
+					{% csrf_token %}
+					<input type="hidden" name="resID" value="{{res.reservation.id}}" />
+					<input type="hidden" name="action" value="5" />
+					<a href="#" onclick="document.getElementById('form{{res.reservation.id}}').submit();return false;" class="card-link">Confirm Bill Payment</a>
+				</form>
+                {% endif %} 
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    <hr>
+{% endblock %}
