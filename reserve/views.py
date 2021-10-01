@@ -68,17 +68,17 @@ def Logout(request):
     return HttpResponseRedirect(reverse("index"))
 
 def pred(values):
-    df = pd.read_csv("reserve/dataset_new.csv")
-    df["Vehicle"].replace(["car", "bike", "truck", "bus"], [1, 2, 3, 4], inplace=True)
-    df["Preorder"].replace([True, False], [1, 0], inplace=True)
-    df = df[:100]
-    df.head()
-    x = df.drop("Status", axis=1)
-    y = df["Status"]
+    data_frame = pd.read_csv("reserve/dataset_new.csv")
+    data_frame["Vehicle"].replace(["car", "bike", "truck", "bus"], [1, 2, 3, 4], inplace=True)
+    data_frame["Preorder"].replace([True, False], [1, 0], inplace=True)
+    data_frame = data_frame[:100]
+    data_frame.head()
+    x = data_frame.drop("Status", axis=1)
+    y = data_frame["Status"]
     sss = StratifiedShuffleSplit(test_size=0.2, random_state=42)
     for train_index, test_index in sss.split(x, y):
-        trainset = df.loc[train_index]
-        testset = df.loc[test_index]
+        trainset = data_frame.loc[train_index]
+        testset = data_frame.loc[test_index]
     trainset.head()
     train_x = trainset.drop("Status", axis=1)
     train_y = trainset["Status"]
@@ -252,18 +252,18 @@ def bill(request, resID):
     if not request.user.is_authenticated:
         messages.add_message(request, messages.ERROR, "You must login first")
         return HttpResponseRedirect(reverse("index"))
-    res=Reservation.objects.get(reservation__id=int(resID))
-    if res==None:
+    reserve=Reservation.objects.get(reservation__id=int(resID))
+    if reserve==None:
         messages.add_message(request, messages.ERROR, "Invalid Reservation ID")
         return HttpResponseRedirect(reverse("index"))
-    if res.reservation.customer!=request.user:
+    if reserve.reservation.customer!=request.user:
         messages.add_message(request, messages.ERROR, "Not your reservation")
         return HttpResponseRedirect(reverse("index"))
-    if res.status>4 or res.status<3:
+    if reserve.status>4 or reserve.status<3:
         messages.add_message(request, messages.ERROR, "You cannot order on this reservation!")
         return HttpResponseRedirect(reverse("index"))
-    res.status=5
-    res.save()
+    reserve.status=5
+    reserve.save()
     messages.add_message(request, messages.INFO, "Reservation Over. Please wait for payment confirmation from manager")
     return HttpResponseRedirect(reverse("reservation"))
     
