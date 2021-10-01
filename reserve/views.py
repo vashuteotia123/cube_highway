@@ -252,18 +252,18 @@ def bill(request, resID):
     if not request.user.is_authenticated:
         messages.add_message(request, messages.ERROR, "You must login first")
         return HttpResponseRedirect(reverse("index"))
-    res=Reservation.objects.get(reservation__id=int(resID))
-    if res==None:
+    reserve=Reservation.objects.get(reservation__id=int(resID))
+    if reserve==None:
         messages.add_message(request, messages.ERROR, "Invalid Reservation ID")
         return HttpResponseRedirect(reverse("index"))
-    if res.reservation.customer!=request.user:
+    if reserve.reservation.customer!=request.user:
         messages.add_message(request, messages.ERROR, "Not your reservation")
         return HttpResponseRedirect(reverse("index"))
-    if res.status>4 or res.status<3:
+    if reserve.status>4 or reserve.status<3:
         messages.add_message(request, messages.ERROR, "You cannot order on this reservation!")
         return HttpResponseRedirect(reverse("index"))
-    res.status=5
-    res.save()
+    reserve.status=5
+    reserve.save()
     messages.add_message(request, messages.INFO, "Reservation Over. Please wait for payment confirmation from manager")
     return HttpResponseRedirect(reverse("reservation"))
     
